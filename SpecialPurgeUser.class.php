@@ -400,6 +400,7 @@ EOT;
     switch($versionMinor)
     {
       case 16 :
+      case 18 :
       case 19 :
         $purge = new MWPurge_1_16;
         break;

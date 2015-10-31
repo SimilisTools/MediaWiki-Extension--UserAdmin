@@ -163,7 +163,7 @@ EOT;
     // POST was selected then redirected back to GET
     if(!empty($this->userid))
     {
-      if(!empty($this->username)) $userName = $this->username;
+      if(!empty($this->username)) $userName = ($this->username = strtoupper(substr($this->username,0,1)) . substr($this->username,1)); // db stores first character as uppercase
       if(!empty($this->realname)) $realName = $this->realname;
       if(!empty($this->email)) $email = $this->email;
       if(!empty($this->groups)) $groups = $this->groups;
@@ -402,7 +402,7 @@ EOT;
     $user = User::newFromId($this->userid);
     if(!$user->loadFromId())
       throw new InvalidPOSTParamException(wfMsg('uadm-failedtoloadfromidmsg', $this->userid));
-    
+    $this->username = strtoupper(substr($this->username,0,1)) . substr($this->username,1); // in case the user changes the case of the first character
     // Validate FORM 
     if(empty($this->username))
       throw new InvalidPOSTParamException(wfMsg('uadm-fieldisrequiredmsg',$this->usernamefield));

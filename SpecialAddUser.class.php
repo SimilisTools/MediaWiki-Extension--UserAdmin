@@ -240,7 +240,7 @@ EOT;
     // Validate FORM 
     if(empty($this->username))
       throw new InvalidPOSTParamException(wfMsg('uadm-fieldisrequiredmsg',$this->usernamefield));
-    
+    $this->username = strtoupper(substr($this->username,0,1)) . substr($this->username,1); // in case the user changes the case of the first character
     // check if its already being used
     if(User::idFromName($this->username) !== null)
       throw new InvalidPOSTParamException(wfMsg('uadm-usernameinusemsg', $this->username));

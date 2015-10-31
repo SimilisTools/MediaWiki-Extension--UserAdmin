@@ -55,8 +55,6 @@ abstract class SpecialUADMBase extends SpecialPage {
   function __construct($name, $rights) 
   {
     parent::__construct($name, $rights);
-
-    wfLoadExtensionMessages('UserAdmin');
     
     $this->mURL = $this->getTitle()->getLocalURL();
   }

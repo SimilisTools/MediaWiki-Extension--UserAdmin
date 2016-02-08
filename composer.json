@@ -1,0 +1,29 @@
+{
+	"name": "mediawiki/user-admin",
+	"type": "mediawiki-extension",
+	"description": "Extension that adds a user administration panel",
+	"keywords": [
+		"MediaWiki",
+		"User",
+		"Administration"
+	],
+	"homepage": "https://github.com/SimilisTools/MediaWiki-Extension--UserAdmin",
+	"license": "GPL-3.0+",
+	"authors": [
+		{
+			"name": "Toni Hermoso Pulido",
+			"role": "Developer"
+		},
+		{
+			"name": "Lance Gatlin",
+			"role": "Creator"
+		}
+	],
+	"require": {
+		"php": ">=5.3.0",
+		"composer/installers": "1.*,>=1.0.1"
+	},
+	"autoload": {
+		"files": ["UserAdmin.php"]
+	}
+}

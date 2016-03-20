@@ -346,7 +346,7 @@ EOT;
       case 'emailwelcome' :
         $result = self::mailWelcomeAndPassword($user);
 
-        if( WikiError::isError( $result ) )
+        if( ! $result->isGood() )
           return $this->getPOSTRedirectURL( false, wfMsg( 'uadm-mailerror', $result->getMessage() ) );
 
         $successWikiText[] = wfMsg('uadm-welcomeemailsuccessmsg', $this->username, $this->email);

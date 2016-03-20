@@ -324,14 +324,13 @@ EOT;
 	 * @param $throttle Boolean
 	 * @param $emailTitle String: message name of email title
 	 * @param $emailText String: message name of email text
-	 * @return Mixed: true on success, WikiError on failure
 	 */
 	static function mailPasswordInternal( $user, $throttle, $emailTitle, $emailText) 
   {
 		global $wgUser;
 
 		if ( $user->getEmail() == '' ) 
-			return new WikiError( wfMsg( 'noemail', $user->getName() ) );
+			return wfMsg( 'noemail', $user->getName() );
     
 		wfRunHooks( 'User::mailPasswordInternal', array(&$wgUser, &$ip, &$user) );
 
@@ -380,7 +379,7 @@ EOT;
     
 		$ip = wfGetIP();
 		if( !$ip ) 
-			return new WikiError( wfMsg( 'badipaddress' ) );
+			return wfMsg( 'badipaddress' );
 		
 		$newPassword = $user->randomPassword();
     

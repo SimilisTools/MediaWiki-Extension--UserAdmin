@@ -576,7 +576,7 @@ EOT;
       case 'email' :
         $result = self::mailPassword($user);
 
-        if( WikiError::isError( $result ) )
+        if( ! $result->isGood() )
           return $this->getPOSTRedirectURL(false, wfMsg( 'uadm-mailerrormsg', $result->getMessage() ) );
 
         $changesMade = true;
@@ -594,7 +594,7 @@ EOT;
       case 'emailwelcome' :
         $result = self::mailWelcomeAndPassword($user);
 
-        if( WikiError::isError( $result ) )
+        if( ! $result->isGood() )
           return $this->getPOSTRedirectURL( false, wfMsg( 'uadm-mailerrormsg', $result->getMessage() ) );
 
         $changesMade = true;

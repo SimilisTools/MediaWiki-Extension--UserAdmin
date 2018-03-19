@@ -85,9 +85,9 @@ class SpecialMassBlock extends SpecialUADMBase {
     {
       $user = User::newFromId($this->userid);
       if(!$user->loadFromId())
-        throw new InvalidGETParamException(wfMsg('uadm-invaliduseridmsg',$this->userid), $this->copyParamsAndRemoveBadParam('userid'));
+        throw new InvalidGETParamException(wfMessage('uadm-invaliduseridmsg',$this->userid)->text(), $this->copyParamsAndRemoveBadParam('userid'));
       if($this->isAdminUser($user))
-          throw new InvalidGETParamException(wfMsg('uadm-nodeleteadminmsg',$user->getName()), $this->copyParamsAndRemoveBadParam('userid'));
+          throw new InvalidGETParamException(wfMessage('uadm-nodeleteadminmsg',$user->getName())->text(), $this->copyParamsAndRemoveBadParam('userid'));
 
       $users[] = $user;
     }
@@ -96,9 +96,9 @@ class SpecialMassBlock extends SpecialUADMBase {
     {
       $user = User::newFromName($this->subpage);
       if(!is_object($user) || $user->getId() == 0)
-        throw new InvalidGETParamException(wfMsg('uadm-usernoexistmsg', $this->subpage), $this->copyParamsAndRemoveBadParam('subpage'));
+        throw new InvalidGETParamException(wfMessage('uadm-usernoexistmsg', $this->subpage)->text(), $this->copyParamsAndRemoveBadParam('subpage'));
       if($this->isAdminUser($user))
-          throw new InvalidGETParamException(wfMsg('uadm-nodeleteadminmsg', $user->getName()), $this->copyParamsAndRemoveBadParam('subpage'));
+          throw new InvalidGETParamException(wfMessage('uadm-nodeleteadminmsg', $user->getName())->text(), $this->copyParamsAndRemoveBadParam('subpage'));
       $users[] = $user;
     }
 
@@ -106,10 +106,10 @@ class SpecialMassBlock extends SpecialUADMBase {
     {
       $user = User::newFromName($this->username);
       if(!is_object($user) || $user->getId() == 0)
-        throw new InvalidGETParamException(wfMsg('uadm-usernoexistmsg', $this->username), $this->copyParamsAndRemoveBadParam('username'));
+        throw new InvalidGETParamException(wfMessage('uadm-usernoexistmsg', $this->username)->text(), $this->copyParamsAndRemoveBadParam('username'));
 
       if($this->isAdminUser($user))
-        throw new InvalidGETParamException(wfMsg('uadm-nodeleteadminmsg', $this->username), $this->copyParamsAndRemoveBadParam('username'));
+        throw new InvalidGETParamException(wfMessage('uadm-nodeleteadminmsg', $this->username)->text(), $this->copyParamsAndRemoveBadParam('username'));
       $users[] = $user;
     }
 
@@ -120,9 +120,9 @@ class SpecialMassBlock extends SpecialUADMBase {
       {
         $user = User::newFromId($userid);
         if(!$user->loadFromId())
-          throw new InvalidGETParamException(wfMsg('uadm-invaliduseridmsg',$userid), $this->copyParamsAndRemoveBadArrayValue('userids', $userid));
+          throw new InvalidGETParamException(wfMessage('uadm-invaliduseridmsg',$userid)->text(), $this->copyParamsAndRemoveBadArrayValue('userids', $userid));
         if($this->isAdminUser($user))
-          throw new InvalidGETParamException(wfMsg('uadm-nodeleteadminmsg', $user->getName()), $this->copyParamsAndRemoveBadArrayValue('userids', $userid));
+          throw new InvalidGETParamException(wfMessage('uadm-nodeleteadminmsg', $user->getName())->text(), $this->copyParamsAndRemoveBadArrayValue('userids', $userid));
 
         $users[] = $user;
       }
@@ -135,9 +135,9 @@ class SpecialMassBlock extends SpecialUADMBase {
       {
         $user = User::newFromName($username);
         if(!is_object($user) || $user->getId() == 0)
-          throw new InvalidGETParamException(wfMsg('uadm-usernoexistmsg', $username), $this->copyParamsAndRemoveBadArrayValue('usernames', $username));
+          throw new InvalidGETParamException(wfMessage('uadm-usernoexistmsg', $username)->text(), $this->copyParamsAndRemoveBadArrayValue('usernames', $username));
         if($this->isAdminUser($user))
-          throw new InvalidGETParamException(wfMsg('uadm-nodeleteadminmsg', $username), $this->copyParamsAndRemoveBadArrayValue('usernames', $username));
+          throw new InvalidGETParamException(wfMessage('uadm-nodeleteadminmsg', $username)->text(), $this->copyParamsAndRemoveBadArrayValue('usernames', $username));
 
         $users[] = $user;
       }
@@ -154,9 +154,9 @@ class SpecialMassBlock extends SpecialUADMBase {
 
     $returnToHTML = '';
     if(!empty($this->returnto))
-      $returnToHTML = self::parse(wfMsg('uadm-returntomsg', $this->returnto));
+      $returnToHTML = self::parse(wfMessage('uadm-returntomsg', $this->returnto)->text());
 
-    $searchFormHTML = $this->getSearchFormHTML(wfMsg('uadm-deleteauserlabel'));
+    $searchFormHTML = $this->getSearchFormHTML(wfMessage('uadm-deleteauserlabel')->text());
 
     if(count($users) == 0)
       return <<<EOT
@@ -181,12 +181,12 @@ EOT;
     $editToken = $wgUser->editToken('deleteuser' . $wgUser->getName());
 
     # Get expiry options list (copied from SpecialBlockip.php
-    $scBlockExpiryOptions = wfMsgForContent( 'ipboptions' );
+    $scBlockExpiryOptions = wfMessage( 'ipboptions' )->inContentLanguage()->text();
 
 		$showblockoptions = $scBlockExpiryOptions != '-';
 		if( !$showblockoptions ) $mIpbother = $mIpbexpiry;
 
-		$blockExpiryFormOptions = Xml::option( wfMsg( 'ipbotheroption' ), 'other' );
+		$blockExpiryFormOptions = Xml::option( wfMessage( 'ipbotheroption' )->text(), 'other' );
 		foreach( explode( ',', $scBlockExpiryOptions ) as $option ) {
 			if( strpos( $option, ':' ) === false ) $option = "$option:$option";
 			list( $show, $value ) = explode( ':', $option );
@@ -246,7 +246,7 @@ EOT;
       $groupsHTML .= User::makeGroupLinkHtml($group, htmlspecialchars(User::getGroupMember($group))) . ', ';
     $groupsHTML = substr($groupsHTML, 0, strlen($groupsHTML) - 2);
 
-    $unconfirmed = $user->isEmailConfirmationPending() ? wfMsg('') : '';
+    $unconfirmed = $user->isEmailConfirmationPending() ? wfMessage('')->text() : '';
     $userPageURL = $user->getUserPage()->getLocalURL();
     $editCount = $user->getEditCount();
     $createDate = $user->getRegistration();
@@ -290,10 +290,10 @@ EOT;
     global $wgUser;
 
     if(!$wgUser->matchEditToken($this->edittoken, 'deleteuser' . $wgUser->getName()))
-      throw new InvalidPOSTParamException(wfMsg('uadm-formsubmissionerrormsg'));
+      throw new InvalidPOSTParamException(wfMessage('uadm-formsubmissionerrormsg')->text());
 
     if(empty($this->reason))
-      throw new InvalidPOSTParamException(wfMsg('uadm-fieldisrequiredmsg',$this->reasonfield));
+      throw new InvalidPOSTParamException(wfMessage('uadm-fieldisrequiredmsg',$this->reasonfield)->text());
 
     if(!empty($this->returnto))
     {
@@ -312,9 +312,9 @@ EOT;
     {
       $user = User::newFromId($this->userid);
       if(!$user->loadFromId())
-        throw new InvalidPOSTParamException(wfMsg('uadm-invaliduseridmsg',$this->userid));
+        throw new InvalidPOSTParamException(wfMessage('uadm-invaliduseridmsg',$this->userid)->text());
       if($this->isAdminUser($user))
-          throw new InvalidPOSTParamException(wfMsg('uadm-nodeleteadminmsg',$user->getName()));
+          throw new InvalidPOSTParamException(wfMessage('uadm-nodeleteadminmsg',$user->getName())->text());
 
       $users[] = $user;
     }
@@ -323,9 +323,9 @@ EOT;
     {
       $user = User::newFromName($this->subpage);
       if(!is_object($user) || $user->getId() == 0)
-        throw new InvalidPOSTParamException(wfMsg('uadm-usernoexistmsg', $this->subpage));
+        throw new InvalidPOSTParamException(wfMessage('uadm-usernoexistmsg', $this->subpage)->text());
       if($this->isAdminUser($user))
-          throw new InvalidPOSTParamException(wfMsg('uadm-nodeleteadminmsg', $user->getName()));
+          throw new InvalidPOSTParamException(wfMessage('uadm-nodeleteadminmsg', $user->getName())->text());
       $users[] = $user;
     }
 
@@ -333,10 +333,10 @@ EOT;
     {
       $user = User::newFromName($this->username);
       if(!is_object($user) || $user->getId() == 0)
-        throw new InvalidPOSTParamException(wfMsg('uadm-usernoexistmsg', $this->username));
+        throw new InvalidPOSTParamException(wfMessage('uadm-usernoexistmsg', $this->username)->text());
 
       if($this->isAdminUser($user))
-        throw new InvalidPOSTParamException(wfMsg('uadm-nodeleteadminmsg', $this->username));
+        throw new InvalidPOSTParamException(wfMessage('uadm-nodeleteadminmsg', $this->username)->text());
       $users[] = $user;
     }
 
@@ -347,9 +347,9 @@ EOT;
       {
         $user = User::newFromId($userid);
         if(!$user->loadFromId())
-          throw new InvalidPOSTParamException(wfMsg('uadm-invaliduseridmsg',$userid));
+          throw new InvalidPOSTParamException(wfMessage('uadm-invaliduseridmsg',$userid)->text());
         if($this->isAdminUser($user))
-          throw new InvalidPOSTParamException(wfMsg('uadm-nodeleteadminmsg', $user->getName()));
+          throw new InvalidPOSTParamException(wfMessage('uadm-nodeleteadminmsg', $user->getName())->text());
 
         $users[] = $user;
       }
@@ -362,9 +362,9 @@ EOT;
       {
         $user = User::newFromName($username);
         if(!is_object($user) || $user->getId() == 0)
-          throw new InvalidPOSTParamException(wfMsg('uadm-usernoexistmsg', $username));
+          throw new InvalidPOSTParamException(wfMessage('uadm-usernoexistmsg', $username)->text());
         if($this->isAdminUser($user))
-          throw new InvalidPOSTParamException(wfMsg('uadm-nodeleteadminmsg', $username));
+          throw new InvalidPOSTParamException(wfMessage('uadm-nodeleteadminmsg', $username)->text());
 
         $users[] = $user;
       }
@@ -380,7 +380,7 @@ EOT;
     switch($this->action)
     {
       default :
-        throw new InvalidPOSTParamException(wfMsg('uadm-formsubmissionerrormsg'));
+        throw new InvalidPOSTParamException(wfMessage('uadm-formsubmissionerrormsg')->text());
       case 'confirmdelete' :
         break;
     }
@@ -394,7 +394,7 @@ EOT;
       case 1:
         break;
       default:
-  			return $this->getPOSTRedirectURL( false, wfMsg( 'uadm-unsupportedversionmsg', $abortError) );
+  			return $this->getPOSTRedirectURL( false, wfMessage( 'uadm-unsupportedversionmsg', $abortError)->text() );
 	  }
 
     switch($versionMinor)
@@ -403,7 +403,7 @@ EOT;
         $deleteUser = 'deleteUserVersion1_16';
         break;
       default:
-  			return $this->getPOSTRedirectURL( false, wfMsg( 'uadm-unsupportedversionmsg', $abortError) );
+  			return $this->getPOSTRedirectURL( false, wfMessage( 'uadm-unsupportedversionmsg', $abortError)->text() );
     }
 
     foreach($users as $user)
@@ -422,7 +422,7 @@ EOT;
       $usersMassBlockd
     );
 
-    return $this->getURLWithStatus (array('returnto' => $this->returnto), true, wfMsg('uadm-deletesuccessmsg'));
+    return $this->getURLWithStatus (array('returnto' => $this->returnto), true, wfMessage('uadm-deletesuccessmsg')->text());
   }
 
   function deleteUserVersion1_16($user)

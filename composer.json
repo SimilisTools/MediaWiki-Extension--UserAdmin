@@ -8,7 +8,7 @@
 		"Administration"
 	],
 	"homepage": "https://github.com/SimilisTools/MediaWiki-Extension--UserAdmin",
-	"license": "GPL-3.0+",
+	"license": "GPL-3.0-or-later",
 	"authors": [
 		{
 			"name": "Toni Hermoso Pulido",

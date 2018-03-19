@@ -15,7 +15,7 @@
  * @link http://www.mediawiki.org/wiki/Extension:UserAdmin   Documentation
  * @author Lance Gatlin <lance.gatlin@gmail.com>
  * @license http://opensource.org/licenses/gpl-3.0.html GNU Public License 3.0
- * @version 0.9.2
+ * @version 0.9.3
  */
 
 # Alert the user that this is not a valid entry point to MediaWiki if they try to access the special pages file directly.
@@ -32,7 +32,7 @@ $wgExtensionCredits['specialpage'][] = array(
         'author' => 'Lance Gatlin',
         'url' => 'http://www.mediawiki.org/w/index.php?title=Extension:UserAdmin',
         'descriptionmsg' => 'useradmin-desc',
-        'version' => '0.9.2'
+        'version' => '0.9.3'
         );
  
 $dir = dirname(__FILE__) . '/';

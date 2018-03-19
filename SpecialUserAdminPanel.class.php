@@ -47,7 +47,7 @@ class SpecialUserAdminPanel extends SpecialUADMBase {
 
     // Localize look up field values
     foreach($this->mLookupUserField as $key => $value)
-      $tmp[wfMsg($key)] = $value;
+      $tmp[wfMessage($key)->text()] = $value;
     $this->mLookupUserField = $tmp;
 
     // Set field names to keys of lookup array
@@ -76,8 +76,8 @@ class SpecialUserAdminPanel extends SpecialUADMBase {
         'returnto' => $this->getDefaultReturnTo(),
 
     );
-    $retv['filterby'] = wfMsg('uadm-usernamefield');
-    $retv['sortby'] = wfMsg('uadm-useridfield');
+    $retv['filterby'] = wfMessage('uadm-usernamefield')->text();
+    $retv['sortby'] = wfMessage('uadm-useridfield')->text();
 
     return $retv;
   }
@@ -392,7 +392,7 @@ EOT;
       $groupsHTML .= User::makeGroupLinkHtml($group, htmlspecialchars(User::getGroupMember($group))) . ', ';
     $groupsHTML = substr($groupsHTML, 0, strlen($groupsHTML) - 2);
 
-    $unconfirmed = $user->isEmailConfirmationPending() ? wfMsg('') : '';
+    $unconfirmed = $user->isEmailConfirmationPending() ? wfMessage('')->text() : '';
     $userPageURL = $user->getUserPage()->getLocalURL();
     $editCount = $user->getEditCount();
     $createDate = $user->getRegistration();

@@ -77,9 +77,7 @@ abstract class SpecialUADMBase extends SpecialPage {
         $this->displayRestrictionError();
         return;
     }
-    
-    $this->loadMessages();
-
+  
     if($wgRequest->wasPosted())
       $this->executePOST($subpage);
     else
@@ -241,27 +239,6 @@ EOT;
     // Make script property shortcuts
     foreach($this->mParams as $key => $value)
       $this->$key = $value;
-  }
-  
-  /*
-   * Helper function that loads all messages as members shortcuts. Removes
-   * prefix starting with '-' character from name: uadm-passwordchangesuccessmsg
-   * becomes this->passwordchangesuccessmsg
-   */
-  function loadMessages()
-  {
-    include 'UserAdmin.i18n.php';
-    
-    global $wgLang;
-    
-    foreach($messages['en'] as $key => $notused)
-    {
-      $a = explode('-', $key);
-      if(count($a) == 2)
-        $this->$a[1] = $wgLang->getMessage($key);
-      else
-        $this->$key = $wgLang->getMessage($key);
-    }
   }
   
   /*

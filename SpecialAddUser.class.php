@@ -109,7 +109,7 @@ EOT;
     
     $returnToHTML = '';
     if(!empty($this->returnto))
-      $returnToHTML = self::parse(wfMsg('uadm-returntomsg', $this->returnto));
+      $returnToHTML = self::parse(wfMessage('uadm-returntomsg', $this->returnto)->text());
     
     $postURL = $this->getURL($this->mParams);
     
@@ -239,50 +239,50 @@ EOT;
     
     // Validate FORM 
     if(empty($this->username))
-      throw new InvalidPOSTParamException(wfMsg('uadm-fieldisrequiredmsg',$this->usernamefield));
+      throw new InvalidPOSTParamException(wfMessage('uadm-fieldisrequiredmsg',$this->usernamefield)->text());
     $this->username = strtoupper(substr($this->username,0,1)) . substr($this->username,1); // in case the user changes the case of the first character
     // check if its already being used
     if(User::idFromName($this->username) !== null)
-      throw new InvalidPOSTParamException(wfMsg('uadm-usernameinusemsg', $this->username));
+      throw new InvalidPOSTParamException(wfMessage('uadm-usernameinusemsg', $this->username)->text());
 
     if(!User::isCreatableName($this->username))
-      throw new InvalidPOSTParamException(wfMsg('uadm-invalidusernamemsg',$this->usernamefield));
+      throw new InvalidPOSTParamException(wfMessage('uadm-invalidusernamemsg',$this->usernamefield)->text());
     
     if($this->domain != 'local' && $this->domain != '')
     {
       if(!$wgAuth->validDomain($this->domain))
-        throw new InvalidPOSTParamException(wfMsg('uadm-invaliddomainmsg'));
+        throw new InvalidPOSTParamException(wfMessage('uadm-invaliddomainmsg')->text());
       
       $wgAuth->setDomain($this->domain);
       
       if($wgAuth->userExists($this->username))
-        throw new InvalidPOSTParamException(wfMsg('uadm-usernameinusemsg', $this->username));
+        throw new InvalidPOSTParamException(wfMessage('uadm-usernameinusemsg', $this->username)->text());
     }
       
 //    if(!$wgUser->matchEditToken(stripslashes($this->edittoken), $this->userid))
     if(!$wgUser->matchEditToken($this->edittoken, 'adduser' . $wgUser->getName()))
-      throw new InvalidPOSTParamException(wfMsg('uadm-formsubmissionerrormsg'));
+      throw new InvalidPOSTParamException(wfMessage('uadm-formsubmissionerrormsg')->text());
 
     if(empty($this->email))
-      throw new InvalidPOSTParamException(wfMsg('uadm-fieldisrequiredmsg',$this->emailfield));
+      throw new InvalidPOSTParamException(wfMessage('uadm-fieldisrequiredmsg',$this->emailfield)->text());
 
     if(!User::isValidEmailAddr($this->email))
-      throw new InvalidPOSTParamException(wfMsg('uadm-invalidemailmsg',$this->emailfield));
+      throw new InvalidPOSTParamException(wfMessage('uadm-invalidemailmsg',$this->emailfield)->text());
 
     if(empty($this->pwdaction))
-      throw new InvalidPOSTParamException(wfMsg('uadm-formsubmissionerrormsg'));
+      throw new InvalidPOSTParamException(wfMessage('uadm-formsubmissionerrormsg')->text());
     
     if($this->pwdaction == 'manual')
     {
       if(empty($this->password1) || empty($this->password2))
-        throw new InvalidPOSTParamException(wfMsg('uadm-fieldisrequiredmsg',$this->passwordfield));
+        throw new InvalidPOSTParamException(wfMessage('uadm-fieldisrequiredmsg',$this->passwordfield)->text());
       
       if($this->password1 != $this->password2)
-        throw new InvalidPOSTParamException(wfMsg('uadm-passwordsmustmatchmsg'));
+        throw new InvalidPOSTParamException(wfMessage('uadm-passwordsmustmatchmsg')->text());
 
     }
     elseif($this->pwdaction != 'email' && $this->pwdaction != 'emailwelcome')
-      throw new InvalidPOSTParamException(wfMsg('uadm-formsubmissionerrormsg'));
+      throw new InvalidPOSTParamException(wfMessage('uadm-formsubmissionerrormsg')->text());
 
               
   }
@@ -299,7 +299,7 @@ EOT;
     switch($this->action)
     {
       default :
-        throw new InvalidPOSTParamException(wfMsg('uadm-formsubmissionerrormsg'));
+        throw new InvalidPOSTParamException(wfMessage('uadm-formsubmissionerrormsg')->text());
       case 'emailwelcomepreview' :
         $this->pwdaction = 'emailwelcome';
         $newParams = array('preview' => 'welcome' ) + $this->mParams;
@@ -314,7 +314,7 @@ EOT;
     if($this->domain != 'local' && $this->domain != '')
     {
       if(!$wgAuth->canCreateAccounts())
-        return $this->getPOSTRedirectURL(false, wfMsg('uadm-createextacctfailmsg'));
+        return $this->getPOSTRedirectURL(false, wfMessage('uadm-createextacctfailmsg')->text());
     }
     
     $logRights = new LogPage( 'rights' );
@@ -326,7 +326,7 @@ EOT;
     $user->setEmail($this->email);
     
     $successWikiText = array();
-    $successWikiText[] = wfMsg('uadm-newusersuccessmsg', $this->username);
+    $successWikiText[] = wfMessage('uadm-newusersuccessmsg', $this->username)->text();
     
     $userPassword = '';
     switch($this->pwdaction)
@@ -338,18 +338,18 @@ EOT;
         }
         catch(PasswordError $pe)
         {
-          return $this->getPOSTRedirectURL(false, wfMsg('uadm-passworderrormsg') . $pe->getText());
+          return $this->getPOSTRedirectURL(false, wfMessage('uadm-passworderrormsg') . $pe->getText()->text());
         }
-        $successWikiText[] = wfMsg('uadm-passwordchangesuccessmsg',$this->username);
+        $successWikiText[] = wfMessage('uadm-passwordchangesuccessmsg',$this->username)->text();
         break;
       
       case 'emailwelcome' :
         $result = self::mailWelcomeAndPassword($user);
 
         if( ! $result->isGood() )
-          return $this->getPOSTRedirectURL( false, wfMsg( 'uadm-mailerror', $result->getMessage() ) );
+          return $this->getPOSTRedirectURL( false, wfMessage( 'uadm-mailerror', $result->getMessage() )->text() );
 
-        $successWikiText[] = wfMsg('uadm-welcomeemailsuccessmsg', $this->username, $this->email);
+        $successWikiText[] = wfMessage('uadm-welcomeemailsuccessmsg', $this->username, $this->email)->text();
         break;
     }
     
@@ -358,10 +358,10 @@ EOT;
     
     $abortError = '';
 		if( !wfRunHooks( 'AbortNewAccount', array( $user, &$abortError ) ) )
-			return $this->getPOSTRedirectURL( false, wfMsg( 'uadm-hookblocknewusermsg', $abortError) );
+			return $this->getPOSTRedirectURL( false, wfMessage( 'uadm-hookblocknewusermsg', $abortError)->text() );
 		
     if(!$wgAuth->addUser( $user, $userPassword, $this->email, $this->realname ) )
-			return $this->getPOSTRedirectURL( false, wfMsg( 'uadm-wgauthaddfailmsg', $abortError) );
+			return $this->getPOSTRedirectURL( false, wfMessage( 'uadm-wgauthaddfailmsg', $abortError)->text() );
 
     $user->addToDatabase();
     $user->addNewUserLogEntry();
@@ -371,7 +371,7 @@ EOT;
       $userrightsPage = new UserrightsPage;    
       $userrightsPage->doSaveUserGroups($user, $this->groups, array(), $this->newuserreasonmsg);
       wfRunHooks( 'UserRights', array( $user, $add, $remove ) );
-      $successWikiText[] = wfMsg('uadm-changestogroupsuccessmsg', $this->username);
+      $successWikiText[] = wfMessage('uadm-changestogroupsuccessmsg', $this->username)->text();
     }
     
     $successWikiText = implode('<br/>', $successWikiText);

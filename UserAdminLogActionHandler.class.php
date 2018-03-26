@@ -40,19 +40,19 @@ static function logActionHandler($type, $action, $title, $skin, $params)
   switch($action)
   {
     case 'uadm-userspurgedlog' :
-      return wfMsgExt($action, $options, $params[0]);
+      return wfMessage($action, $options, $params[0])->text();
       
     case 'uadm-emailpasswordlog' :
     case 'uadm-emailwelcomelog' :
     case 'uadm-changeduserpasswordlog' :
-      return wfMsgExt($action, $options, $title->getPrefixedText());
+      return wfMessage($action, $options, $title->getPrefixedText())->text();
       
     case 'uadm-changedusernamelog' :
-      return wfMsgExt($action, $options, $params[0], $params[1], $params[2]);
+      return wfMessage($action, $options, $params[0], $params[1], $params[2])->text();
       
     case 'uadm-changeduseremaillog' :
     case 'uadm-changeduserrealnamelog' :
-      return wfMsgExt($action, $options, $title->getPrefixedText(), $params[0], $params[1]);
+      return wfMessage($action, $options, $title->getPrefixedText(), $params[0], $params[1])->text();
   }
   
 }

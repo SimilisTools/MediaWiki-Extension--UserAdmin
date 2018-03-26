@@ -330,7 +330,7 @@ EOT;
 		global $wgUser;
 
 		if ( $user->getEmail() == '' ) 
-			return wfMsg( 'noemail', $user->getName() );
+			return wfMessage( 'noemail', $user->getName() )->text();
     
 		wfRunHooks( 'User::mailPasswordInternal', array(&$wgUser, &$ip, &$user) );
 
@@ -369,8 +369,8 @@ EOT;
    * sending and previewing a message
    * 
    * @param $user User
-   * @param $emailTitle string of title of message string for wfMsg (e.g. passwordremindertitle)
-   * @param $emailText string of title of message string for wfMsg (e.g. passwordremindertext)
+   * @param $emailTitle string of title of message string for wfMessage (e.g. passwordremindertitle)
+   * @param $emailText string of title of message string for wfMessage (e.g. passwordremindertext)
    * @return array($subject as string, $body as string, $newPassword as string)
    */
   static function getMailMessage($user, $emailTitle, $emailText)
@@ -379,15 +379,15 @@ EOT;
     
 		$ip = wfGetIP();
 		if( !$ip ) 
-			return wfMsg( 'badipaddress' );
+			return wfMessage( 'badipaddress' )->text();
 		
 		$newPassword = $user->randomPassword();
     
 		$userLangUADMge = $user->getOption( 'langUADMge' );
     
-    $subject = wfMsgExt( $emailTitle, array( 'parsemag', 'langUADMge' => $userLangUADMge ));
+    $subject = wfMessage( $emailTitle, array( 'parsemag', 'langUADMge' => $userLangUADMge ))->text();
     
-		$body = wfMsgExt( $emailText, array( 'parsemag', 'langUADMge' => $userLangUADMge )
+		$body = wfMessage( $emailText, array( 'parsemag', 'langUADMge' => $userLangUADMge )
             ,$ip // $1 
             ,$user->getName() // $2 [User's name]
             ,$newPassword // $3 [new password]
@@ -396,7 +396,7 @@ EOT;
             ,$user->getRealName() // $6 [User's real name]
             ,$user->getEmail() // $7 [User's email]
             
-    );
+    )->text();
     
     return array($subject, $body, $newPassword);
   }

@@ -207,7 +207,7 @@ class SpecialUserAdminPanel extends SpecialUADMBase {
     $groupsfieldHTML = $this->groupsfield;
     $lastEditDatefieldHTML = $this->lasteditdatefield;
 
-    $wgOut->includeJQuery();
+    // $wgOut->includeJQuery();
 
     $allOrNoneScript = <<<EOT
 <script language="javascript" type="text/javascript">

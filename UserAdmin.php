@@ -37,7 +37,8 @@ $wgExtensionCredits['specialpage'][] = array(
  
 $dir = dirname(__FILE__) . '/';
  
-$wgExtensionMessagesFiles['UserAdmin'] = $dir . 'UserAdmin.i18n.alias.php'; 
+$wgMessagesDirs['UserAdmin'] = $dir . 'i18n';
+$wgExtensionMessagesFiles['UserAdmin'] = $dir . 'i18n/UserAdmin.i18n.alias.php'; 
 
 $wgAutoloadClasses['SpecialUserAdminPanel'] = $dir . 'SpecialUserAdminPanel.class.php'; 
 $wgAutoloadClasses['SpecialAddUser'] = $dir . 'SpecialAddUser.class.php'; 

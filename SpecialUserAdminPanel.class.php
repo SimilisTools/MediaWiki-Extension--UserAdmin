@@ -145,7 +145,7 @@ class SpecialUserAdminPanel extends SpecialUADMBase {
     if($this->filterneg != '0' && $this->filterneg != '1')
       $this->filterneg = $this->mParamsGET['filterneg'];
 
-    if($this->filterby == $this->createddatefield || $this->filterby==$this->usertoucheddatefield)
+    if($this->filterby == wfMessage( "uadm-createddatefield" )->text() || $this->filterby==wfMessage("uadm-usertoucheddatefield")->text())
     {
       $result = strtotime($this->filtertext);
       if($result === false)
@@ -197,16 +197,19 @@ class SpecialUserAdminPanel extends SpecialUADMBase {
       $userRowsHTML .= $this->getUserRowHTML($user);
 
     // Build links for fields to allow sorting by that column, if clicked
-    $idfieldHTML = $this->getSortfieldHTML($this->useridfield);
-    $userNamefieldHTML = $this->getSortfieldHTML($this->usernamefield);
-    $realNamefieldHTML = $this->getSortfieldHTML($this->realnamefield);
-    $emailfieldHTML = $this->getSortfieldHTML($this->emailfield);
-    $createdDatefieldHTML = $this->getSortfieldHTML($this->createddatefield);
-    $userTouchedDatefieldHTML = $this->getSortfieldHTML($this->usertoucheddatefield);
-    $editcountfieldHTML = $this->getSortfieldHTML($this->editcountfield);
-    $groupsfieldHTML = $this->groupsfield;
-    $lastEditDatefieldHTML = $this->lasteditdatefield;
-
+    $idfieldHTML = $this->getSortfieldHTML( wfMessage( "uadm-useridfield" )->text() );
+    $userNamefieldHTML = $this->getSortfieldHTML( wfMessage( "uadm-usernamefield" )->text() );
+    $realNamefieldHTML = $this->getSortfieldHTML( wfMessage( "uadm-realnamefield" )->text() );
+    $emailfieldHTML = $this->getSortfieldHTML(wfMessage( "uadm-emailfieldid" )->text() );
+    $createdDatefieldHTML = $this->getSortfieldHTML(wfMessage( "uadm-createddatefield" )->text() );
+    $userTouchedDatefieldHTML = $this->getSortfieldHTML(wfMessage("uadm-usertoucheddatefield")->text());
+    $editcountfieldHTML = $this->getSortfieldHTML(wfMessage( "uadm-editcountfield" )->text() );
+    $groupsfieldHTML = wfMessage( "uadm-groupsfield" )->text();
+    $lastEditDatefieldHTML = wfMessage( "uadm-lasteditdatefield" )->text();
+    $blockActionLabelHTML = wfMessage( "uadm-blockactionlabel" )->text();
+    $uapnewuseractionlabelHTML = wfMessage( "uadm-uapnewuseractionlabel" )->text();
+    $usertoucheddatehelpHMTL = wfMessage( "uadm-usertoucheddatehelp" )->text();
+    
     // $wgOut->includeJQuery();
 
     $allOrNoneScript = <<<EOT
@@ -230,10 +233,10 @@ $pageSizerHTML
 $pageSizerSpacerHTML
 $filterControlsHTML
 <form name="input" action="$this->mURL" method="post" class="visualClear">
-<button type="submit" name="action" value="block">$this->blockactionlabel</button>
+<button type="submit" name="action" value="block">$blockActionLabelHTML</button>
 <table>
     <tr>
-        <th><button type="submit" name="action" value="newuser">$this->uapnewuseractionlabel</button></th>
+        <th><button type="submit" name="action" value="newuser">$uapnewuseractionlabelHTML</button></th>
         <th><input id="allornone" type="checkbox" name="allOrNone" onclick="all()"/></th>
         <th>$idfieldHTML</th>
         <th>$userNamefieldHTML</th>
@@ -241,7 +244,7 @@ $filterControlsHTML
         <th>$emailfieldHTML</th>
         <th>$groupsfieldHTML</th>
         <th>$createdDatefieldHTML</th>
-        <th>$userTouchedDatefieldHTML<a title="$this->usertoucheddatehelp">[?]</a></th>
+        <th>$userTouchedDatefieldHTML<a title="$usertoucheddatehelpHMTL">[?]</a></th>
         <th>$lastEditDatefieldHTML</th>
         <th>$editcountfieldHTML</th>
     </tr>
@@ -358,14 +361,18 @@ EOT;
       $filterOpsHTML .= "<option value=\"$i\" $selected>$op</option>";
       $i++;
     }
+    
+    $filterbylabelHTML = wfMessage( "uadm-filterbylabel" )->text();
+    $notlabelHTML = wfMessage( "uadm-notlabel" )->text();
+    $applyactionlabelHTML = wfMessage( "uadm-applyactionlabel" )->text();
 
     return <<<EOT
 <form name="filterControl" action="$this->mURL" method="get">
-   <label for="filterby">$this->filterbylabel:</label> <select id="filterby" name="filterby">$filterChoicesHTML</select>
-   <select name="filterneg"><option value="0" $filterNeg0Selected></option><option value="1" $filterNeg1Selected>$this->notlabel</option></select>
+   <label for="filterby">$filterbylabelHTML</label> <select id="filterby" name="filterby">$filterChoicesHTML</select>
+   <select name="filterneg"><option value="0" $filterNeg0Selected></option><option value="1" $filterNeg1Selected>$notlabelHTML</option></select>
    <select name="filterop">$filterOpsHTML</select>
    <input type="text" name="filtertext" value="$this->filtertext"/>
-   <input type="submit" value="$this->applyactionlabel"/>
+   <input type="submit" value="$applyactionlabelHTML"/>
    $nonDefaultParamsHTML
 </form>
 EOT;
@@ -410,10 +417,15 @@ EOT;
     $contribsHref = $this->getSpecialPageURL('Contributions',$userName);
     $logsHref = $this->getSpecialPageURL('Log',$userName);
     $rmovHref = $this->getSpecialPageURL('UserMerge', '', array('olduser' => $userName, 'deleteuser' => 'true' ) );
-
+    
+    $editactionlabelHTML = wfMessage( "uadm-editactionlabel" )->text();
+    $contributionsactionlabelHTML = wfMessage( "uadm-contributionsactionlabel" )->text();
+    $logsactionlabelHTML = wfMessage( "uadm-logsactionlabel" )->text();
+    $rmovactionlabelHTML = wfMessage( "uadm-rmovactionlabel" )->text();
+    
     return <<<EOT
 <tr>
-    <td><a href="$editHref">($this->editactionlabel</a> | <a href="$contribsHref">$this->contributionsactionlabel</a> | <a href="$logsHref">$this->logsactionlabel</a> | <a href="$rmovHref">$this->rmovactionlabel</a> )</td>
+    <td><a href="$editHref">($editactionlabelHTML</a> | <a href="$contribsHref">$contributionsactionlabelHTML</a> | <a href="$logsHref">$logsactionlabelHTML</a> | <a href="$rmovHref">$rmovactionlabelHTML</a> )</td>
     <td><input class="selusr" type="checkbox" name="userids[]" value="$id"/></td>
     <td>$id</td>
     <td><a href="$userPageURL">$userName</a></td>

@@ -25,7 +25,7 @@
         "uadm-emailauthdatefield": "Email Authenticated Date",
         "uadm-reasonfield": "Reason",
         "uadm-passwordfield": "Password",
-        "domainfield": "Domain",
+        "uadm-domainfield": "Domain",
         "uadm-previousactionlabel": "Previous",
         "uadm-nextactionlabel": "Next",
         "uadm-blockactionlabel": "Block",

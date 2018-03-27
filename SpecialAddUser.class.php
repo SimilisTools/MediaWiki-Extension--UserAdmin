@@ -113,7 +113,7 @@ EOT;
     
     $postURL = $this->getURL($this->mParams);
     
-    $editToken = $wgUser->editToken('adduser' . $wgUser->getName());
+    $editToken = $wgUser->getEditToken('adduser' . $wgUser->getName());
 
     $previewPasswordEmailHref = $this->getURL(array('preview' => 'password') + $this->mParams);
     $previewWelcomeEmailHref = $this->getURL(array('preview' => 'welcome') + $this->mParams);
@@ -135,11 +135,13 @@ EOT;
           list($subject, $body) = $this->getWelcomeMailMessage($tempUser);
           break;
       }
+      
+      $subjectlabelHTML = wfMessage( 'uadm-subjectlabel' )->text();
     
       $previewHTML=<<<EOT
 <table>
   <tr>
-    <td>$this->subjectlabel</td>
+    <td>$subjectlabelHTML</td>
     <td><input value="$subject" size="70" disabled="disabled"/></td>
   <tr>
     <td colspan="2"><textarea rows="10" cols="80" disabled="disabled">$body</textarea></td>
@@ -158,7 +160,8 @@ EOT;
     
     # Hack to detect if domain is needed
     $domainHTML = '';
-    $template = new UsercreateTemplate;
+    #$template = new UsercreateTemplate;
+    $template = null; # TODO: to be fixed
     $temp = 'signup';
     // Bug fix. This does nothing.
     $wgAuth->autoCreate(); 
@@ -173,57 +176,75 @@ EOT;
     // wgAuth to "unstub" it so that the below call will be made directly and
     // not by call_user_func_array
     $wgAuth->modifyUITemplate($template, $temp);
+    
+    $domainfieldHTML = wfMessage( 'uadm-domainfield' )->text();
+    
     if(isset($template->data['usedomain']) && $template->data['usedomain'] == true)
     {
       $domainHTML = <<<EOT
       <tr>
-        <td><label for="domain">$this->domainfield</label></td>
+        <td><label for="domain">$domainfieldHTML</label></td>
         <td><input id="domain" type="text" name="domain" size="30" value="$this->domain"/><br/></td>
       </tr>
 EOT;
     }
     
+    $usernamefieldHTML = wfMessage( 'uadm-usernamefield' )->text();
+    $requiredlabelHTML = wfMessage( 'uadm-requiredlabel')->text();
+    $realnamefieldHTML = wfMessage( 'uadm-realnamefield' )->text();
+    $emailfieldHTML = wfMessage( 'uadm-emailfield' )->text();
+    $editgroupslabelHTML = wfMessage( 'uadm-editgroupslabel' )->text();
+    $editpasswordlabelHTML = wfMessage( 'uadm-editpasswordlabel' )->text();
+    $setpasswordforuserlabel = wfMessage( 'uadm-setpasswordforuserlabel' )->text();
+    $passwordlabelHTML = wfMessage( 'uadm-passwordlabel' )->text();
+    $verifypasswordlabelHTML = wfMessage( 'uadm-verifypasswordlabel' )->text();
+    $adduserlabelHTML = wfMessage( 'uadm-adduserlabel' )->text();
+    $emailwelcomelabelHTML = wfMessage( 'uadm-emailwelcomelabel' )->text();
+    $previewactionlabelHTML = wfMessage( 'uadm-previewactionlabel')->text();
+    $subjectlabelHTML = wfMessage( 'uadm-subjectlabel' )->text();
+    $bodylabelHTML = wfMessage( 'uadm-bodylabel' )->text();
+    
     return <<<EOT
 <form id="adduserform" name="input" action="$postURL" method="post" class="visualClear">
   <input type="hidden" name="edittoken" value="$editToken"/>
   <fieldset>
-    <legend>$this->adduserlabel</legend>
+    <legend>$adduserlabelHTML</legend>
     <table>
       <tr>
-        <td><label for="username">$this->usernamefield</label></td>
-        <td><input id="username" type="text" name="username" size="30" value="$this->username"/> $this->requiredlabel<br/></td>
+        <td><label for="username">$usernamefieldHTML</label></td>
+        <td><input id="username" type="text" name="username" size="30" value="$this->username"/> $requiredlabelHTML<br/></td>
       </tr>
 $domainHTML
       <tr>
-        <td><label for="realname">$this->realnamefield</label></td>
+        <td><label for="realname">$realnamefieldHTML</label></td>
         <td><input id="realname" type="text" name="realname" size="30" value="$this->realname"/><br/></td>
       </tr>
       <tr>
-        <td><label for="email">$this->emailfield</label></td>
-        <td><input id="email" type="text" name="email" size="30" value="$this->email"/> $this->requiredlabel<br/></td>
+        <td><label for="email">$emailfieldHTML</label></td>
+        <td><input id="email" type="text" name="email" size="30" value="$this->email"/> $requiredlabelHTML<br/></td>
       </tr>
     </table>
     <fieldset>
-      <legend>$this->editgroupslabel</legend>
+      <legend>$editgroupslabelHTML</legend>
       $groupsHTML
     </fieldset>
     <fieldset>
-      <legend>$this->editpasswordlabel</legend>
-      <input id="pwdmanual" type="radio" name="pwdaction" value="manual" $setPasswordChecked/> <label for="pwdmanual">$this->setpasswordforuserlabel</label><br/>
+      <legend>$editpasswordlabelHTML</legend>
+      <input id="pwdmanual" type="radio" name="pwdaction" value="manual" $setPasswordChecked/> <label for="pwdmanual">$setpasswordforuserlabel</label><br/>
         <table>
           <tr>
-            <td><label for="password1">$this->passwordlabel</label></td>
+            <td><label for="password1">$passwordlabelHTML</label></td>
             <td><input id="password1" type="password" name="password1" size="30"/></td>
           </tr>
           <tr>
-            <td><label for="password2">$this->verifypasswordlabel</label></td>
+            <td><label for="password2">$verifypasswordlabelHTML</label></td>
             <td><input id="password2" type="password" name="password2" size="30"/></td>
           </tr>
         </table>
-      <input id="pwdemailwelcome" type="radio" name="pwdaction" value="emailwelcome" $emailWelcomeChecked/> <label for="pwdemailwelcome">$this->emailwelcomelabel</label> <button type="submit" name="action" value="emailwelcomepreview">$this->previewactionlabel</button> (<a href="$welcomeTitleHref">$this->subjectlabel</a> | <a href="$welcomeTextHref">$this->bodylabel</a>)<br/>
+      <input id="pwdemailwelcome" type="radio" name="pwdaction" value="emailwelcome" $emailWelcomeChecked/> <label for="pwdemailwelcome">$emailwelcomelabelHTML</label> <button type="submit" name="action" value="emailwelcomepreview">$previewactionlabelHTML</button> (<a href="$welcomeTitleHref">$subjectlabelHTML</a> | <a href="$welcomeTextHref">$bodylabelHTML</a>)<br/>
       $previewWelcomeEmailHTML
     </fieldset>
-    <button type="submit" name="action" value="adduser">$this->adduserlabel</button>
+    <button type="submit" name="action" value="adduser">$adduserlabelHTML</button>
   </fieldset>
 </form>
 $returnToHTML
@@ -266,7 +287,7 @@ EOT;
     if(empty($this->email))
       throw new InvalidPOSTParamException(wfMessage('uadm-fieldisrequiredmsg',$this->emailfield)->text());
 
-    if(!User::isValidEmailAddr($this->email))
+    if(!Sanitizer::validateEmail($this->email))
       throw new InvalidPOSTParamException(wfMessage('uadm-invalidemailmsg',$this->emailfield)->text());
 
     if(empty($this->pwdaction))

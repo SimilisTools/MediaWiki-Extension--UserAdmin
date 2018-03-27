@@ -135,7 +135,7 @@ class SpecialEditUser extends SpecialUADMBase {
     if(!empty($this->returnto))
     {
       $returnToHTML = self::parse(wfMessage('uadm-returntomsg', $this->returnto)->text());
-      $backHTML = $this->parse("[[$this->returnto|< $this->backactionlabel]] | ");
+      $backHTML = $this->parse("[[$this->returnto|< ".wfMessage( 'uadm-backactionlabel' )->text()."]] | ");
     }
     
     if(!is_object($user))
@@ -217,12 +217,12 @@ EOT;
     {
       $returnToHTML = self::parse(wfMessage('uadm-returntomsg', $this->returnto)->text());
       $searchFormHTML = '';
-      $backHTML = $this->parse("[[$this->returnto|< $this->backactionlabel]] | ");
+      $backHTML = $this->parse("[[$this->returnto|< ".wfMessage( 'uadm-backactionlabel' )->text()."]] | ");
     }
     
     $postURL = $this->getURL($this->mParams);
     
-    $editToken = $wgUser->editToken($this->userid);
+    $editToken = $wgUser->getEditToken($this->userid);
 
 //    $previewPasswordEmailHref = $this->getURL(array('preview' => 'password') + $this->mParams);
 //    $previewWelcomeEmailHref = $this->getURL(array('preview' => 'welcome') + $this->mParams);
@@ -283,15 +283,23 @@ EOT;
         break;
     }
     
+    $talkactionlabelHTML = wfMessage('uadm-talkactionlabel')->text();
+    $blockactionlabelHTML = wfMessage('uadm-blockactionlabel')->text();
+    $purgeactionlabelHTML = wfMessage('uadm-purgeactionlabel')->text();
+    $logsactionlabelHTML = wfMessage('uadm-logsactionlabel')->text();
+    $contributionsactionlabelHTML = wfMessage('uadm-contributionsactionlabel')->text();
+    $ipsactionlabelHTML = wfMessage('uadm-psactionlabel')->text();
+    
     $subtitle =<<<EOT
-$backHTML<a href="$userPageHref"><b>$userName</b></a> (<a href="$userTalkPageHref">$this->talkactionlabel</a> | <a href="$blockHref">$this->blockactionlabel</a> | <a href="$purgeHref">$this->purgeactionlabel</a> | <a href="$logsHref">$this->logsactionlabel</a> | <a href="$contribsHref">$this->contributionsactionlabel</a> | <a href="$checkuserHref">$this->ipsactionlabel</a>) 
+$backHTML<a href="$userPageHref"><b>$userName</b></a> (<a href="$userTalkPageHref">$talkactionlabelHTML</a> | <a href="$blockHref">$blockactionlabelHTML</a> | <a href="$purgeHref">$purgeactionlabelHTML</a> | <a href="$logsHref">$logsactionlabelHTML</a> | <a href="$contribsHref">$contributionsactionlabelHTML</a> | <a href="$checkuserHref">$ipsactionlabelHTML</a>) 
 EOT;
     
     $wgOut->setSubtitle($subtitle);
     
     # Hack to detect if domain is needed
     $domainHTML = '';
-    $template = new UsercreateTemplate;
+    # $template = new UsercreateTemplate;
+    $template = null; # TODO: to be fixed
     $temp = 'signup';
     // Bug fix. This does nothing.
     $wgAuth->autoCreate(); 
@@ -316,75 +324,100 @@ EOT;
 EOT;
     }
     
+    $edituserlabelHTML = wfMessage( 'uadm-edituserlabel' )->text();
+    $useridfieldHTML = wfMessage( 'uadm-useridfield' )->text();
+    $usernamefieldHTML = wfMessage( 'uadm-usernamefield' )->text();
+    $requiredlabelHTML = wfMessage( 'uadm-requiredlabel')->text();
+    $realnamefieldHTML = wfMessage( 'uadm-realnamefield' )->text();
+    $emailfieldHTML = wfMessage( 'uadm-emailfield' )->text();
+    $emailauthdatefieldHTML = wfMessage( 'uadm-emailauthdatefield' )->text();
+    $createddatefieldHTML = wfMessage('uadm-createddatefield')->text();
+    $usertoucheddatefieldHTML = wfMessage('uadm-usertoucheddatefield')->text();
+    $editcountfieldHTML = wfMessage('uadm-editcountfield')->text();
+    $lasteditdatefieldHTML = wfMessage('uadm-lasteditdatefield')->text();
+    $editgroupslabelHTML = wfMessage( 'uadm-editgroupslabel' )->text();
+    $editpasswordlabelHTML = wfMessage( 'uadm-editpasswordlabel' )->text();
+    $setpasswordforuserlabelHTML = wfMessage( 'uadm-setpasswordforuserlabel' )->text();
+    $passwordlabelHTML = wfMessage( 'uadm-passwordlabel' )->text();
+    $verifypasswordlabelHTML = wfMessage( 'uadm-verifypasswordlabel' )->text();
+    $emailpasswordlabelHTML = wfMessage( 'uadm-emailpasswordlabel' )->text();
+    $emailwelcomelabelHTML = wfMessage( 'uadm-emailwelcomelabel' )->text();
+    $previewactionlabelHTML = wfMessage( 'uadm-previewactionlabel')->text();
+    $subjectlabelHTML = wfMessage( 'uadm-subjectlabel' )->text();
+    $bodylabelHTML = wfMessage( 'uadm-bodylabel' )->text();
+    $nochangetopasswordlabelHTML = wfMessage( 'uadm-nochangetopasswordlabel' )->text();
+    $reasonlabelHTML = wfMessage( 'uadm-reasonlabel' )->text();
+    $saveuserlabelHTML = wfMessage( 'uadm-saveuserlabel' )->text();
+
     return <<<EOT
 <form id="edituserform" name="input" action="$postURL" method="post" class="visualClear">
   <input type="hidden" name="edittoken" value="$editToken"/>
   <fieldset>
-    <legend>$this->edituserlabel:</legend>
+    <legend>$edituserlabelHTML:</legend>
     <table>
       <tr>
-        <td><label for="userid">$this->useridfield:</label></td>
+        <td><label for="userid">$useridfieldHTML:</label></td>
         <td><input id="userid" type="text" name="userid" value="$id" disabled="disabled" size="30"/><br/></td>
       </tr>
       <tr>
-        <td><label for="username">$this->usernamefield:</label></td>
-        <td><input id="username" type="text" name="username" value="$userName" size="30"/> $this->requiredlabel<br/></td>
+        <td><label for="username">$usernamefieldHTML:</label></td>
+        <td><input id="username" type="text" name="username" value="$userName" size="30"/> $requiredlabelHTML<br/></td>
       </tr>
 $domainHTML
       <tr>
-        <td><label for="realname">$this->realnamefield:</label></td>
+        <td><label for="realname">$realnamefieldHTML:</label></td>
         <td><input id="realname" type="text" name="realname" value="$realName" size="30"/><br/></td>
       </tr>
       <tr>
-        <td><label for="email">$this->emailfield:</label></td>
-        <td><input id="email" type="text" name="email" value="$email" size="30"/> $this->requiredlabel<br/></td>
+        <td><label for="email">$emailfieldHTML:</label></td>
+        <td><input id="email" type="text" name="email" value="$email" size="30"/> $requiredlabelHTML<br/></td>
       </tr>
       <tr>
-        <td><label for="emailauthdate">$this->emailauthdatefield:</label></td>
+        <td><label for="emailauthdate">$emailauthdatefieldHTML:</label></td>
         <td><input id="emailauthdate" type="text" value="$emailAuthDate" size="30" disabled="disabled"/><br/></td>
       </tr>
       <tr>
-        <td><label for="createdate">$this->createddatefield:</label></td>
+        <td><label for="createdate">$createddatefieldHTML:</label></td>
         <td><input id="createdate" type="text" value="$createDate" disabled="disabled" size="30"/><br/></td>
       </tr>
       <tr>
-        <td><label for="usertouched">$this->usertoucheddatefield:</label></td>
+        <td><label for="usertouched">$usertoucheddatefieldHTML:</label></td>
         <td><input id="usertouched" type="text" value="$userTouchedDate" disabled="disabled" size="30"/><br/></td>
       </tr>
       <tr>
-        <td><label for="lasteditdate">$this->lasteditdatefield:</label></td>
+        <td><label for="lasteditdate">$lasteditdatefieldHTML:</label></td>
         <td><input id="lasteditdate" type="text" value="$lastEditDate" disabled="disabled" size="30"/><br/></td>
       </tr>
       <tr>
-        <td><label for="editcount">$this->editcountfield:</label></td>
+        <td><label for="editcount">$editcountfieldHTML:</label></td>
         <td><input id="editcount" type="text" value="$editCount" disabled="disabled" size="30"/><br/></td>
       </tr>
     </table>
     <fieldset>
-      <legend>$this->editgroupslabel:</legend>
+      <legend>$editgroupslabelHTML:</legend>
       $groupsHTML
     </fieldset>
     <fieldset>
-      <legend>$this->editpasswordlabel:</legend>
-      <input id="pwdmanual" type="radio" name="pwdaction" value="manual" $pwdSetPasswordChecked/> <label for="pwdmanual">$this->setpasswordforuserlabel:</label><br/>
+      <legend>$editpasswordlabelHTML:</legend>
+      <input id="pwdmanual" type="radio" name="pwdaction" value="manual" $pwdSetPasswordChecked/> <label for="pwdmanual">$setpasswordforuserlabelHTML:</label><br/>
         <table>
           <tr>
-            <td><label for="password1">$this->passwordlabel:</label></td>
+            <td><label for="password1">$passwordlabelHTML:</label></td>
             <td><input id="password1" type="password" name="password1" size="30"/></td>
           </tr>
           <tr>
-            <td><label for="password2">$this->verifypasswordlabel:</label></td>
+            <td><label for="password2">$verifypasswordlabelHTML:</label></td>
             <td><input id="password2" type="password" name="password2" size="30"/></td>
           </tr>
         </table>
-      <input id="pwdemail" type="radio" name="pwdaction" value="email" $pwdEmailPasswordChecked/> <label for="pwdemail">$this->emailpasswordlabel</label> <button type="submit" name="action" value="emailpwdpreview">$this->previewactionlabel</button>(<a href="$pwdtitleHref">$this->subjectlabel</a> | <a href="$pwdtextHref">$this->bodylabel</a>)<br/>
+      <input id="pwdemail" type="radio" name="pwdaction" value="email" $pwdEmailPasswordChecked/> <label for="pwdemail">$emailpasswordlabelHTML</label> <button type="submit" name="action" value="emailpwdpreview">$previewactionlabelHTML</button>(<a href="$pwdtitleHref">$subjectlabelHTML</a> | <a href="$pwdtextHref">$bodylabelHTML</a>)<br/>
       $previewPasswordEmailHTML
-      <input id="pwdemailwelcome" type="radio" name="pwdaction" value="emailwelcome" $pwdEmailWelcomeChecked/> <label for="pwdemailwelcome">$this->emailwelcomelabel</label> <button type="submit" name="action" value="emailwelcomepreview">$this->previewactionlabel</button>(<a href="$welcomeTitleHref">$this->subjectlabel</a> | <a href="$welcomeTextHref">$this->bodylabel</a>)<br/>
+      <input id="pwdemailwelcome" type="radio" name="pwdaction" value="emailwelcome" $pwdEmailWelcomeChecked/> <label for="pwdemailwelcome">$emailwelcomelabelHTML</label> <button type="submit" name="action" value="emailwelcomepreview">$previewactionlabelHTML</button>(<a href="$welcomeTitleHref">$subjectlabelHTML</a> | <a href="$welcomeTextHref">$bodylabelHTML</a>)<br/>
       $previewWelcomeEmailHTML
-      <input id="pwdnochange" type="radio" name="pwdaction" value="nochange" $pwdNoChangeChecked/> <label for="pwdnochange">$this->nochangetopasswordlabel</label><br/>
+      <input id="pwdnochange" type="radio" name="pwdaction" value="nochange" $pwdNoChangeChecked/> <label for="pwdnochange">$nochangetopasswordlabelHTML</label><br/>
     </fieldset>
-    <label for="reason">$this->reasonlabel:</label> <input id="reason" type="text" name="reason" size="60" maxlength="255" value="$this->reason"/> $this->requiredlabel<br/>
-    <button type="submit" name="action" value="saveuser">$this->saveuserlabel</button>
+    <label for="reason">$reasonlabelHTML:</label> <input id="reason" type="text" name="reason" size="60" maxlength="255" value="$this->reason"/> $requiredlabelHTML<br/>
+    <button type="submit" name="action" value="saveuser">$saveuserlabelHTML</button>
   </fieldset>
 </form>
 $searchFormHTML
@@ -436,7 +469,7 @@ EOT;
     if(empty($this->email))
       throw new InvalidPOSTParamException(wfMessage('uadm-fieldisrequiredmsg',$this->emailfield)->text());
 
-    if(!User::isValidEmailAddr($this->email))
+    if(!Sanitizer::validateEmail($this->email))
       throw new InvalidPOSTParamException(wfMessage('uadm-invalidemailmsg',$this->emailfield)->text());
 
     if(empty($this->reason))

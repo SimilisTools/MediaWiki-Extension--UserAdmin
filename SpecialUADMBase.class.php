@@ -18,6 +18,8 @@
  * @version 0.9.0
 */
 
+use MediaWiki\Auth\AuthManager;
+
 /*
  * Exception class for throwing invalid GET parameters
  */
@@ -313,7 +315,9 @@ EOT;
 
     list($subject, $body, $np) = self::getMailMessage($user, $emailTitle, $emailText);
     
-		$user->setNewpassword( $np, $throttle );
+		#$user->setNewpassword( $np, $throttle );
+		$passwordReset = new PasswordReset( RequestContext::getMain()->getConfig(), AuthManager::singleton() );
+		$passwordReset->execute( $wgUser, $user->getName(), $user->getEmail() );
 		$user->saveSettings();
     
 		$result = $user->sendMail( $subject, $body );
@@ -352,9 +356,10 @@ EOT;
    */
   static function getMailMessage($user, $emailTitle, $emailText)
   {
-    global $wgNewPasswordExpiry, $wgServer, $wgScript;
+    global $wgRequest, $wgNewPasswordExpiry, $wgServer, $wgScript;
     
-		$ip = wfGetIP();
+		$ip = $wgRequest->getIP();
+		
 		if( !$ip ) 
 			return wfMessage( 'badipaddress' )->text();
 		
@@ -565,11 +570,14 @@ EOT;
    */
   function getSearchFormHTML($legend)
   {
+		
+		$enterusernamelabelHTML = wfMessage( 'uadm-enterusernamelabel' )->text();
+
     return<<<EOT
 <form name="search" action="$this->mURL" method="get" class="visualClear">
   <fieldset>
     <legend>$legend</legend>
-    <label for="username">$this->enterusernamelabel:</label>
+    <label for="username">$enterusernamelabelHTML:</label>
     <input id="username" type="text" name="username" size="30">
     <input type="submit" value="Search"/>
   </fieldset>

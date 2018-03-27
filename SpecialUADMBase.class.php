@@ -365,11 +365,24 @@ EOT;
 		
 		$newPassword = $user->randomPassword();
     
+		// TODO: Handle user language
 		$userLangUADMge = $user->getOption( 'langUADMge' );
-    
-    $subject = wfMessage( $emailTitle, array( 'parsemag', 'langUADMge' => $userLangUADMge ))->text();
-    
-		$body = wfMessage( $emailText, array( 'parsemag', 'langUADMge' => $userLangUADMge )
+		    
+    // $subject = wfMessage( $emailTitle, array( 'parsemag', 'langUADMge' => $userLangUADMge ))->text();
+    $subject = wfMessage( $emailTitle )->text();
+//		
+//		$body = wfMessage( $emailText, array( 'parsemag', 'langUADMge' => $userLangUADMge )
+//            ,$ip // $1 
+//            ,$user->getName() // $2 [User's name]
+//            ,$newPassword // $3 [new password]
+//            ,$wgServer . $wgScript // $4 [URL of wiki]
+//            ,round( $wgNewPasswordExpiry / 86400 ) // $5 [days to password expires]
+//            ,$user->getRealName() // $6 [User's real name]
+//            ,$user->getEmail() // $7 [User's email]
+//            
+//    )->text();
+		
+		$body = wfMessage( $emailText
             ,$ip // $1 
             ,$user->getName() // $2 [User's name]
             ,$newPassword // $3 [new password]
@@ -379,7 +392,7 @@ EOT;
             ,$user->getEmail() // $7 [User's email]
             
     )->text();
-    
+		
     return array($subject, $body, $newPassword);
   }
 

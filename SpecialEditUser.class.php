@@ -241,10 +241,12 @@ EOT;
           break;
       }
     
+      $subjectlabelHTML = wfMessage( 'uadm-subjectlabel' )->text();
+    
       $previewHTML=<<<EOT
 <table>
   <tr>
-    <td>$this->subjectlabel</td>
+    <td>$subjectlabelHTML</td>
     <td><input value="$subject" size="70" disabled="disabled"/></td>
   <tr>
     <td colspan="2"><textarea rows="10" cols="80" disabled="disabled">$body</textarea></td>
@@ -288,7 +290,7 @@ EOT;
     $purgeactionlabelHTML = wfMessage('uadm-purgeactionlabel')->text();
     $logsactionlabelHTML = wfMessage('uadm-logsactionlabel')->text();
     $contributionsactionlabelHTML = wfMessage('uadm-contributionsactionlabel')->text();
-    $ipsactionlabelHTML = wfMessage('uadm-psactionlabel')->text();
+    $ipsactionlabelHTML = wfMessage('uadm-ipsactionlabel')->text();
     
     $subtitle =<<<EOT
 $backHTML<a href="$userPageHref"><b>$userName</b></a> (<a href="$userTalkPageHref">$talkactionlabelHTML</a> | <a href="$blockHref">$blockactionlabelHTML</a> | <a href="$purgeHref">$purgeactionlabelHTML</a> | <a href="$logsHref">$logsactionlabelHTML</a> | <a href="$contribsHref">$contributionsactionlabelHTML</a> | <a href="$checkuserHref">$ipsactionlabelHTML</a>) 
